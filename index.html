@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Auc-fi</title>
+  <meta name="description" content="Auc-fi — Luxury auctions for watches, jewelry, fine art, rare collectibles. Bid smart, pay easy."/>
+  <meta name="keywords" content="Auc-fi,luxury auction,live auctions,bid now,upcoming lots,private sales,collections,featured lots,sell with us,VIP access,market insights,results archive,high-end marketplace,collectibles,fine art,watches,jewelry"/>
+  <meta name="theme-color" content="#0b0e14"/>
+ 
+  <link rel="shortcut icon" href="image/logo.jpg" type="image/x-icon">
+  <link rel="stylesheet" href="css/style.css">
+ 
+</head>
+<body>
+
+  <!-- Topbar -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a class="brand" href="#" aria-label="Auc-fi Home" data-route="home">
+        <span class="crest">A</span>
+        <strong class="brand-name" aria-hidden="true">
+          <span>A</span><span>u</span><span>c</span><span>-</span><span>fi</span>
+        </strong>
+      </a>
+
+      <form class="search" role="search" onsubmit="event.preventDefault(); handleSearch()">
+        <input id="searchInput" type="search" placeholder="Search artists, references, collections…" aria-label="Search"/>
+        <button type="submit" aria-label="Search">Search</button>
+      </form>
+
+      <nav aria-label="Primary">
+        <a class="nav-link active" href="#home" data-route="home">Home</a>
+        <a class="nav-link" href="#live" data-route="auth">Live Auctions / Bid Now</a>
+        <a class="nav-link" href="#upcoming" data-route="auth">Upcoming Lots</a>
+        <a class="nav-link" href="#private" data-route="auth">Private Sales</a>
+        <a class="nav-link" href="#support" data-route="auth">Help & Support</a>
+        <a class="nav-link" href="#collections" data-route="auth">Collections</a>
+        <a class="nav-link" href="#featured" data-route="auth">Featured Lots</a>
+        <a class="nav-link" href="#sell" data-route="auth">Sell With Us</a>
+        <a class="nav-link" href="#vip" data-route="auth">VIP Access</a>
+        <a class="nav-link" href="#insights" data-route="auth">Market Insights</a>
+        <a class="nav-link" href="#results" data-route="auth">Results Archive</a>
+        <button id="authCta" class="cta" data-route="auth">Register Now / Sign In</button>
+        <div id="profileChip" class="profile-chip">
+          <span>Hi, <strong id="profileName">Collector</strong></span>
+          <button id="signOutBtn" class="signout-btn">Sign Out</button>
+        </div>
+      </nav>
+
+      <button class="burger" aria-label="Open menu" onclick="openSheet()">☰</button>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="sheet" id="sheet" aria-hidden="true">
+      <div class="sheet-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
+          <div class="brand-name"><span>A</span><span>u</span><span>c</span><span>-</span><span>fi</span></div>
+          <button class="close-x" aria-label="Close menu" onclick="closeSheet()">×</button>
+        </div>
+        <nav>
+          <a class="nav-link" href="#home" data-route="home" onclick="closeSheet()">Home</a>
+          <a class="nav-link" href="#live" data-route="auth" onclick="closeSheet()">Live Auctions / Bid Now</a>
+          <a class="nav-link" href="#upcoming" data-route="auth" onclick="closeSheet()">Upcoming Lots</a>
+          <a class="nav-link" href="#private" data-route="auth" onclick="closeSheet()">Private Sales</a>
+          <a class="nav-link" href="#support" data-route="auth" onclick="closeSheet()">Help & Support</a>
+          <a class="nav-link" href="#collections" data-route="auth" onclick="closeSheet()">Collections</a>
+          <a class="nav-link" href="#featured" data-route="auth" onclick="closeSheet()">Featured Lots</a>
+          <a class="nav-link" href="#sell" data-route="auth" onclick="closeSheet()">Sell With Us</a>
+          <a class="nav-link" href="#vip" data-route="auth" onclick="closeSheet()">VIP Access</a>
+          <a class="nav-link" href="#insights" data-route="auth" onclick="closeSheet()">Market Insights</a>
+          <a class="nav-link" href="#results" data-route="auth" onclick="closeSheet()">Results Archive</a>
+          <button class="cta" data-route="auth" onclick="closeSheet()">Register Now / Sign In</button>
+          <div id="mProfileChip" class="profile-chip" style="margin-top:8px">
+            <span>Hi, <strong id="mProfileName">Collector</strong></span>
+            <button id="mSignOutBtn" class="signout-btn">Sign Out</button>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOME (public; media + timers) -->
+  <main id="home" tabindex="-1">
+    <section class="grid hero">
+      <div class="panel">
+        <h1>Bid with confidence on <span style="color:var(--gold)">Auc-fi</span></h1>
+        <p class="motto">bid smart, pay easy</p>
+        <p class="muted">Curated luxury auctions — watches, jewelry, fine art, rare collectibles. Transparent provenance. Concierge support.</p>
+
+        <div class="media-rail" aria-label="Showcase tags">
+          <span class="chip">#watches</span><span class="chip">#jewelry</span><span class="chip">#fineArt</span>
+          <span class="chip">#classicCars</span><span class="chip">#handbags</span><span class="chip">#rareWhisky</span>
+          <span class="chip">#photography</span><span class="chip">#sneakers</span>
+        </div>
+
+        <!-- Dynamic lots injected here -->
+        <div id="homeLots" class="lots" aria-label="Highlighted lots"></div>
+      </div>
+
+      <aside class="panel">
+        <h2 style="margin-top:0">Concierge</h2>
+        <p class="muted">Private previews, white-glove shipping, discreet settlements.</p>
+        <ul style="margin-top:8px; padding-left:18px">
+          <li>Independent condition reports</li>
+          <li>Escrow & buyer protection</li>
+          <li>Expert valuations</li>
+        </ul>
+        <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn" data-route="auth">Explore Live Auctions</button>
+          <button class="btn alt" data-route="auth">Sell With Us</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <!-- ====== LOT SOURCE (EDIT HERE IN HTML) ====== -->
+  <div id="lotSource" hidden>
+    <!-- media-type: img | vid ; for vid you can add data-poster -->
+    <div class="lot-def" data-id="L-5711" data-title="Patek Philippe Nautilus 5711" data-est-low="80000" data-est-high="120000" data-media-type="img" data-src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1400&auto=format&fit=crop"></div>
+    <div class="lot-def" data-id="L-PANTH" data-title="Cartier Panthère Bracelet" data-est-low="30000" data-est-high="45000" data-media-type="vid" data-src="https://cdn.coverr.co/videos/coverr-gold-ink-1080p.mp4" data-poster="https://images.unsplash.com/photo-1519337265831-281ec6cc8514?q=80&w=1400&auto=format&fit=crop"></div>
+    <div class="lot-def" data-id="L-ART01" data-title="Modernist Oil on Canvas" data-est-low="12000" data-est-high="18000" data-media-type="img" data-src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=1400&auto=format&fit=crop"></div>
+    <div class="lot-def" data-id="L-BIRKIN" data-title="Hermès Birkin 30 Togo Noir" data-est-low="18000" data-est-high="26000" data-media-type="img" data-src="https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1400&auto=format&fit=crop"></div>
+    <div class="lot-def" data-id="L-DAYT" data-title="Rolex Daytona 6263" data-est-low="150000" data-est-high="220000" data-media-type="img" data-src="https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?q=80&w=1400&auto=format&fit=crop"></div>
+    <div class="lot-def" data-id="L-APRO" data-title="Audemars Piguet Royal Oak 15202" data-est-low="120000" data-est-high="180000" data-media-type="img" data-src="https://images.unsplash.com/photo-1548171915-0d2f62b6881a?q=80&w=1400&auto=format&fit=crop"></div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div class="modal" id="authModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Authentication dialog">
+    <div class="dialog">
+      <button class="close-x" aria-label="Close" onclick="closeAuth()">×</button>
+      <div class="aside">
+        <h2>Join <span style="color:var(--gold)">Auc-fi</span></h2>
+        <p>Access live auctions, private sales, and premium analytics.</p>
+        <ul style="margin:8px 0 0 18px">
+          <li>Verified bidders & secure escrow</li>
+          <li>Priority previews & VIP events</li>
+          <li>Full results archive & analytics</li>
+        </ul>
+      </div>
+      <div class="form">
+        <div class="tabs" role="tablist" aria-label="Authentication tabs">
+          <button id="tabSignIn" class="tab active" role="tab" aria-selected="true" onclick="switchTab('signin')">Sign In</button>
+          <button id="tabRegister" class="tab" role="tab" aria-selected="false" onclick="switchTab('register')">Register</button>
+        </div>
+
+        <!-- Sign In -->
+        <form id="formSignIn" onsubmit="event.preventDefault(); submitSignIn()" autocomplete="on" aria-labelledby="tabSignIn">
+          <div class="field"><label for="siEmail">Email</label><input id="siEmail" type="email" placeholder="you@example.com" required/></div>
+          <div class="field"><label for="siPassword">Password</label><input id="siPassword" type="password" placeholder="●●●●●●●●" minlength="6" required/></div>
+          <div class="field" style="align-items:flex-start"><label><input type="checkbox" id="rememberMe"/> Keep me signed in</label></div>
+          <button class="submit" type="submit">Sign In</button>
+          <p class="muted" style="margin:0">No account? <a href="#" onclick="switchTab('register'); return false;">Register now</a></p>
+        </form>
+
+        <!-- Register -->
+        <form id="formRegister" onsubmit="event.preventDefault(); submitRegister()" style="display:none" autocomplete="on" aria-labelledby="tabRegister">
+          <div class="field"><label for="rName">Full Name</label><input id="rName" type="text" placeholder="First Last" required/></div>
+          <div class="field"><label for="rEmail">Email</label><input id="rEmail" type="email" placeholder="you@example.com" required/></div>
+          <div class="field"><label for="rType">Account Type</label>
+            <select id="rType" required><option value="">Select one</option><option>Bidder</option><option>Consignor (Seller)</option><option>Both</option></select>
+          </div>
+          <div class="field"><label for="rPassword">Password</label><input id="rPassword" type="password" placeholder="Minimum 6 characters" minlength="6" required/></div>
+          <div class="field"><label for="rConfirm">Confirm Password</label><input id="rConfirm" type="password" placeholder="Repeat password" minlength="6" required/></div>
+          <button class="submit" type="submit">Create Account</button>
+          <p class="muted" style="margin:0">By creating an account, you agree to our Terms & Privacy.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- BID FLOW WIZARD -->
+  <div class="wizard" id="bidWizard" role="dialog" aria-modal="true" aria-label="Place a bid">
+    <div class="wizard-header">
+      <strong>Place a Bid</strong>
+      <button class="close-x" aria-label="Close" onclick="closeBidWizard()">×</button>
+    </div>
+    <div class="wizard-body">
+      <div class="steps">
+        <span id="step1" class="step active">1 • Bid</span>
+        <span id="step2" class="step">2 • Details</span>
+        <span id="step3" class="step">3 • Review</span>
+      </div>
+
+      <!-- STEP 1 -->
+      <div id="bidStep1">
+        <div class="callout">Lot: <strong id="bwLotTitle">—</strong> • Closes: <span id="bwLotCloses">—</span></div>
+
+        <div class="field">
+          <label for="bwAmount">Your maximum bid (proxy) — base currency: USD</label>
+          <input id="bwAmount" type="number" min="1" step="1" placeholder="Enter amount (USD)" required/>
+        </div>
+
+        <div class="field">
+          <label for="bwCurrency">Paying currency (front-end conversion)</label>
+          <select id="bwCurrency">
+            <option value="USD">USD — US Dollar</option>
+            <option value="EUR">EUR — Euro</option>
+            <option value="GBP">GBP — British Pound</option>
+            <option value="NGN">NGN — Nigerian Naira</option>
+            <option value="JPY">JPY — Japanese Yen</option>
+            <option value="INR">INR — Indian Rupee</option>
+            <option value="CHF">CHF — Swiss Franc</option>
+            <option value="CAD">CAD — Canadian Dollar</option>
+            <option value="AUD">AUD — Australian Dollar</option>
+          </select>
+        </div>
+
+        <div class="callout" id="fxPreview">Converted total will appear here after you enter an amount.</div>
+
+        <div class="field" style="align-items:flex-start">
+          <label><input type="checkbox" id="bwAgree"/> I agree to the Conditions of Sale & Buyer’s Premium.</label>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="bidStep2" style="display:none">
+        <div class="field"><label for="bwFullName">Full Name</label><input id="bwFullName" placeholder="First Last" required/></div>
+        <div class="field"><label for="bwPhone">Phone (international)</label><input id="bwPhone" placeholder="+2348012345678 or +14151234567" required/></div>
+        <div class="field"><label for="bwAddress">Billing Address</label><input id="bwAddress" placeholder="Street, City, State/Region, Postal Code" required/></div>
+        <div class="field"><label for="bwId">ID Type</label>
+          <select id="bwId" required><option value="">Select one</option><option>Passport</option><option>Driver’s License</option><option>National ID</option></select>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div id="bidStep3" style="display:none">
+        <div class="callout">
+          <div><strong>Lot:</strong> <span id="rvLot"></span></div>
+          <div><strong>Max Bid:</strong> $<span id="rvAmount"></span> (USD)</div>
+          <div><strong>To Pay:</strong> <span id="rvFx"></span></div>
+          <div><strong>Bidder:</strong> <span id="rvName"></span> • <span id="rvPhone"></span></div>
+          <div><strong>Billing:</strong> <span id="rvAddr"></span></div>
+        </div>
+        <p class="muted">On “Proceed to Payment”, you’ll be redirected to a secure gateway (handled by backend). This demo stops before real payment.</p>
+      </div>
+    </div>
+    <div class="wizard-actions">
+      <button class="btn alt" onclick="prevStep()">Back</button>
+      <button class="btn" id="nextBtn" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- ===== GATED APP SECTIONS (visible after sign in) ===== -->
+  <section id="live" class="section-page panel" aria-label="Live auctions">
+    <h2>Live Auctions</h2>
+    <p class="muted">Real-time bidding events with soft-close protection. Direct calls to action below.</p>
+    <div class="toolbar">
+      <select class="select" id="liveCat">
+        <option>All Categories</option><option>Watches</option><option>Jewelry</option><option>Art</option><option>Handbags</option>
+      </select>
+      <select class="select" id="liveSort">
+        <option>Ending Soon</option><option>Newest</option><option>Highest Estimate</option>
+      </select>
+      <input class="input" id="liveQuery" placeholder="Search lot # or title"/>
+      <button class="btn" onclick="filterLive()">Apply</button>
+    </div>
+    <table>
+      <thead><tr><th>Lot</th><th>Estimate</th><th>Status</th><th>Closes</th><th>Action</th></tr></thead>
+      <tbody id="liveRows"><tr><td colspan="5" class="muted">Populated from Home lots for demo.</td></tr></tbody>
+    </table>
+  </section>
+
+  <section id="upcoming" class="section-page panel" aria-label="Upcoming lots">
+    <h2>Upcoming Lots</h2>
+    <div class="toolbar">
+      <select class="select"><option>All Categories</option><option>Watches</option><option>Art</option></select>
+      <select class="select"><option>Opens Soonest</option><option>Opens Latest</option></select>
+      <input class="input" placeholder="Search upcoming lots"/>
+      <button class="btn">Filter</button>
+    </div>
+    <table>
+      <thead><tr><th>Lot</th><th>Category</th><th>Opens</th><th>Closes</th><th>Estimate</th><th>Action</th></tr></thead>
+      <tbody id="upcomingRows"></tbody>
+    </table>
+  </section>
+
+  <section id="private" class="section-page panel" aria-label="Private sales">
+    <h2>Private Sales</h2>
+    <p class="muted">Exclusive, fixed-price opportunities available to qualified buyers only.</p>
+    <div class="toolbar">
+      <select class="select"><option>All Departments</option><option>Haute Horlogerie</option><option>High Jewelry</option><option>Blue-Chip Art</option></select>
+      <button class="btn">Request Access</button>
+    </div>
+    <div class="callout">A relationship manager will contact you to verify eligibility and provide private viewing rooms.</div>
+  </section>
+
+  <section id="support" class="section-page panel" aria-label="Help and support">
+    <h2>Help & Support</h2>
+    <div class="toolbar">
+      <input class="input" placeholder="Search help topics (payments, shipping, KYC…)"/>
+      <button class="btn">Search</button>
+    </div>
+    <table>
+      <thead><tr><th>Topic</th><th>Summary</th></tr></thead>
+      <tbody>
+        <tr><td>Bidding Basics</td><td>Bid increments, reserve prices, soft close, anti-sniping.</td></tr>
+        <tr><td>Payments</td><td>Escrow, wire transfers, card holds, release timelines.</td></tr>
+        <tr><td>Authentication</td><td>Provenance checks, third-party reports, dispute process.</td></tr>
+        <tr><td>Shipping</td><td>White-glove packing, insurance, customs & taxes.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="collections" class="section-page panel" aria-label="Collections">
+    <h2>Collections</h2>
+    <div class="toolbar">
+      <select class="select"><option>Curations</option><option>Modernist Art</option><option>Iconic Watches</option><option>Maison Handbags</option></select>
+      <button class="btn">Open Collection</button>
+    </div>
+    <div class="callout">Curated categories with expert commentary and price histories.</div>
+  </section>
+
+  <section id="featured" class="section-page panel" aria-label="Featured lots">
+    <h2>Featured Lots</h2>
+    <div class="toolbar">
+      <select class="select"><option>Editor’s Picks</option><option>Most Watched</option><option>Newly Added</option></select>
+      <button class="btn">Refresh</button>
+    </div>
+    <table>
+      <thead><tr><th>Lot</th><th>Category</th><th>Estimate</th><th>Status</th></tr></thead>
+      <tbody id="featuredRows"></tbody>
+    </table>
+  </section>
+
+  <section id="sell" class="section-page panel" aria-label="Sell with us">
+    <h2>Sell With Us</h2>
+    <p class="muted">Consign with confidence — fast valuations, global reach, insured logistics.</p>
+    <form id="sellForm" onsubmit="event.preventDefault(); alert('Submission received. Our specialists will contact you.');">
+      <div class="field"><label>Full Name</label><input required placeholder="First Last"/></div>
+      <div class="field"><label>Email</label><input type="email" required placeholder="you@example.com"/></div>
+      <div class="field"><label>Category</label>
+        <select required><option>Watches</option><option>Jewelry</option><option>Art</option><option>Handbags</option><option>Other</option></select>
+      </div>
+      <div class="field"><label>Item Description</label><textarea rows="4" placeholder="Maker, model, year, condition, paperwork…"></textarea></div>
+      <button class="submit">Request Valuation</button>
+    </form>
+  </section>
+
+  <section id="vip" class="section-page panel" aria-label="VIP access">
+    <h2>VIP Access</h2>
+    <div class="kpi">
+      <div class="card"><strong>Early Previews</strong><div class="muted">48h before public</div></div>
+      <div class="card"><strong>Concierge</strong><div class="muted">1:1 specialist chat</div></div>
+      <div class="card"><strong>Zero Fees</strong><div class="muted">On select drops</div></div>
+      <div class="card"><strong>Private Rooms</strong><div class="muted">Invite-only</div></div>
+    </div>
+    <div class="callout" style="margin-top:12px">Upgrade to VIP for exclusive previews, private sales access, and bespoke payment terms.</div>
+    <div class="toolbar" style="margin-top:12px">
+      <select class="select"><option>Monthly</option><option>Annual (2 months free)</option></select>
+      <button class="btn">Upgrade to VIP</button>
+    </div>
+  </section>
+
+  <section id="insights" class="section-page panel" aria-label="Market insights">
+    <h2>Market Insights</h2>
+    <div class="toolbar">
+      <select class="select"><option>Category</option><option>Watches</option><option>Jewelry</option><option>Art</option></select>
+      <select class="select"><option>Period</option><option>30 days</option><option>90 days</option><option>1 year</option></select>
+      <button class="btn">Update</button>
+    </div>
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>Average Hammer Price</td><td>$42,300</td><td style="color:#60d394">+6.4%</td></tr>
+        <tr><td>Sell-through Rate</td><td>78%</td><td style="color:#60d394">+2.1%</td></tr>
+        <tr><td>Median Bids per Lot</td><td>12</td><td style="color:#ffb74d">+0.8%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="results" class="section-page panel" aria-label="Results archive">
+    <h2>Results Archive</h2>
+    <div class="toolbar">
+      <input class="input" placeholder="Search past lots"/>
+      <select class="select"><option>All Years</option><option>2025</option><option>2024</option><option>2023</option></select>
+      <button class="btn">Search</button>
+    </div>
+    <table>
+      <thead><tr><th>Lot</th><th>Category</th><th>Hammer</th><th>Date</th></tr></thead>
+      <tbody id="resultsRows">
+        <tr><td>#0892 — Royal Oak 15202</td><td>Watches</td><td>$142,000</td><td>Jun 12, 2025</td></tr>
+        <tr><td>#0761 — Kelly 25 Rouge</td><td>Handbags</td><td>$28,500</td><td>May 03, 2025</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    <div>© <span id="year"></span> Auc-fi • Luxury Auctions • All rights reserved.</div>
+    <div class="motto" style="margin:0">bid smart, pay easy</div>
+  </footer>
+
+  <script>
+    /* ===== Helpers ===== */
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const fmt = (n, cur='USD') => new Intl.NumberFormat(undefined, { style:'currency', currency:cur, maximumFractionDigits:0 }).format(Number(n)||0);
+
+    /* ===== Mobile menu ===== */
+    const sheet = $('#sheet');
+    function openSheet(){ sheet.style.display='block'; sheet.setAttribute('aria-hidden','false'); }
+    function closeSheet(){ sheet.style.display='none'; sheet.setAttribute('aria-hidden','true'); }
+    sheet && sheet.addEventListener('click',(e)=>{ if(e.target===sheet) closeSheet(); });
+
+    /* ===== Auth state ===== */
+    let user = JSON.parse(localStorage.getItem('aucfi_user') || 'null'); // {name,email}
+    function setUser(u){ user = u; localStorage.setItem('aucfi_user', JSON.stringify(u)); refreshAuthUI(); }
+    function signOut(){ localStorage.removeItem('aucfi_user'); user=null; refreshAuthUI(); setActiveNav('home'); showOnly('home'); }
+
+    function refreshAuthUI(){
+      const cta = $('#authCta'), chip = $('#profileChip'), mchip=$('#mProfileChip');
+      if(user){
+        cta.style.display='none';
+        chip.style.display='flex'; mchip.style.display='flex';
+        $('#profileName').textContent = user.name?.split(' ')[0] || 'Collector';
+        $('#mProfileName').textContent = $('#profileName').textContent;
+      } else {
+        cta.style.display='inline-block';
+        chip.style.display='none'; mchip.style.display='none';
+      }
+    }
+    $('#signOutBtn').addEventListener('click', signOut);
+    $('#mSignOutBtn').addEventListener('click', signOut);
+
+    /* ===== Router & gating ===== */
+    const pending = { action:null, payload:null }; // to resume bid after auth
+    document.addEventListener('click',(e)=>{
+      const el = e.target.closest('[data-route]');
+      if(!el) return;
+      const route = el.getAttribute('data-route');
+      if(sheet && sheet.style.display==='block') closeSheet();
+
+      if(route==='home'){ e.preventDefault(); setActiveNav('home'); showOnly('home'); closeAuth(); return; }
+
+      if(route==='auth'){
+        e.preventDefault();
+        if(!user){ openAuth(); return; }
+        const hash=(el.getAttribute('href')||'').replace('#','');
+        if(hash && $('#'+hash)){ setActiveNav(hash); showOnly(hash); }
+      }
+    });
+
+    function setActiveNav(sectionId){
+      $$('.nav-link').forEach(a=>a.classList.remove('active'));
+      $$('.nav-link[href="#'+sectionId+'"]').forEach(a=>a.classList.add('active'));
+      if(sectionId==='home') $$('.nav-link[href="#home"]').forEach(a=>a.classList.add('active'));
+    }
+
+    function showOnly(sectionId){
+      $$('.section-page').forEach(s=>s.style.display='none');
+      if(sectionId==='home'){ $('#home').style.display='block'; }
+      else { $('#home').style.display='none'; const sec = $('#'+sectionId); if(sec) sec.style.display='block'; window.scrollTo({top:0,behavior:'smooth'}); }
+    }
+
+    function handleSearch(){
+      const q = $('#searchInput').value.trim();
+      if(!q){ alert('Type something to search.'); return; }
+      if(!user){ openAuth(); return; }
+      alert('Search submitted (demo): '+q);
+    }
+
+    /* ===== Auth modal ===== */
+    const modal = $('#authModal');
+    function openAuth(){ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
+    function closeAuth(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+    modal.addEventListener('click',(e)=>{ if(e.target===modal) closeAuth() });
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ closeAuth(); closeBidWizard(); }});
+
+    function switchTab(which){
+      const isSignIn = which==='signin';
+      $('#tabSignIn').classList.toggle('active', isSignIn);
+      $('#tabRegister').classList.toggle('active', !isSignIn);
+      $('#formSignIn').style.display = isSignIn ? 'block' : 'none';
+      $('#formRegister').style.display = isSignIn ? 'none' : 'block';
+    }
+    function submitSignIn(){
+      const email = $('#siEmail').value.trim(); const pass = $('#siPassword').value;
+      if(!email || pass.length<6){ alert('Enter a valid email and password (6+ chars).'); return; }
+      setUser({name: email.split('@')[0], email});
+      alert('Signed in! (demo)'); closeAuth();
+      setActiveNav('live'); showOnly('live');
+    }
+    function submitRegister(){
+      const name=$('#rName').value.trim(), email=$('#rEmail').value.trim(), type=$('#rType').value, pass=$('#rPassword').value, conf=$('#rConfirm').value;
+      if(!name||!email||!type){ alert('Please fill all required fields.'); return; }
+      if(pass.length<6){ alert('Password must be at least 6 characters.'); return; }
+      if(pass!==conf){ alert('Passwords do not match.'); return; }
+      setUser({name, email, type});
+      alert('Account created! (demo)'); closeAuth();
+      setActiveNav('live'); showOnly('live');
+      if(pending.action==='bid'){ openBidWizard(pending.payload); pending.action=null; pending.payload=null; }
+    }
+
+    /* ===== Home lots (randomized each reload from HTML source) ===== */
+    function readLotSource(){
+      return $$('#lotSource .lot-def').map(n=>({
+        id:n.dataset.id, title:n.dataset.title,
+        est:[Number(n.dataset.estLow), Number(n.dataset.estHigh)],
+        media: { type:n.dataset.mediaType, src:n.dataset.src, poster:n.dataset.poster||'' }
+      }));
+    }
+    function choice(arr,n){ const copy=[...arr]; const out=[]; while(out.length<n && copy.length){ out.push(copy.splice(Math.floor(Math.random()*copy.length),1)[0]); } return out; }
+    function futureISO(minMinutes,maxMinutes){ const now=Date.now(); const add=(minMinutes + Math.floor(Math.random()*(maxMinutes-minMinutes)))*60000; return new Date(now+add).toISOString(); }
+
+    let homeLots=[];
+    function renderHomeLots(){
+      const pool = readLotSource();
+      homeLots = choice(pool,4).map((lot,i)=>({
+        ...lot,
+        opensISO: futureISO(15+5*i, 60+15*i),
+        closesISO: futureISO(120+30*i, 480+60*i)
+      }));
+      const container = $('#homeLots'); container.innerHTML='';
+      homeLots.forEach(lot=>{
+        const card = document.createElement('article'); card.className='lot';
+        const media = document.createElement('div'); media.className='lot-media';
+        if(lot.media.type==='img'){
+          media.innerHTML = `<img src="${lot.media.src}" alt="${lot.title}"/>`;
+        }else{
+          media.innerHTML = `<video muted playsinline controls poster="${lot.media.poster||''}"><source src="${lot.media.src}" type="video/mp4"/></video>`;
+        }
+        const body = document.createElement('div'); body.className='lot-body';
+        body.innerHTML = `
+          <h3 class="lot-title">${lot.title}</h3>
+          <div class="lot-meta">
+            <span class="pill">Opens: ${new Date(lot.opensISO).toLocaleString()}</span>
+            <span class="pill">Closes: ${new Date(lot.closesISO).toLocaleString()}</span>
+            <span class="pill">Estimate: ${fmt(lot.est[0])} – ${fmt(lot.est[1])}</span>
+            <span class="pill" data-countdown data-close="${lot.closesISO}">Ends in —</span>
+          </div>
+          <div class="actions">
+            <button class="btn" data-bid="${lot.id}">Bid Now</button>
+            <button class="btn alt" data-route="auth" href="#live">View Details</button>
+          </div>`;
+        card.appendChild(media); card.appendChild(body); container.appendChild(card);
+      });
+      startCountdowns();
+      hydrateGatedTables();
+    }
+
+    /* ===== Countdown timers ===== */
+    function startCountdowns(){
+      const nodes = $$('[data-countdown]');
+      function tick(){
+        nodes.forEach(n=>{
+          const end = new Date(n.getAttribute('data-close')).getTime();
+          const now = Date.now(); let diff = Math.max(0, end-now);
+          const d=Math.floor(diff/86400000); diff-=d*86400000;
+          const h=Math.floor(diff/3600000); diff-=h*3600000;
+          const m=Math.floor(diff/60000); diff-=m*60000;
+          const s=Math.floor(diff/1000);
+          n.textContent = end<=now ? 'Auction closed' : `Ends in ${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        });
+      }
+      tick(); setInterval(tick,1000);
+    }
+
+    /* ===== Populate gated tables from Home demo data ===== */
+    function hydrateGatedTables(){
+      // Live rows
+      const liveT = $('#liveRows'); liveT.innerHTML='';
+      homeLots.forEach(l=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML = `<td>${l.id} — ${l.title}</td><td>${fmt(l.est[0])} – ${fmt(l.est[1])}</td><td>Live</td><td>${new Date(l.closesISO).toLocaleString()}</td>
+                        <td><button class="btn" data-bid="${l.id}">Bid Now</button></td>`;
+        liveT.appendChild(tr);
+      });
+      // Upcoming
+      const upT = $('#upcomingRows'); upT.innerHTML='';
+      homeLots.forEach(l=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML = `<td>${l.id} — ${l.title}</td><td>Mixed</td><td>${new Date(l.opensISO).toLocaleString()}</td><td>${new Date(l.closesISO).toLocaleString()}</td><td>${fmt(l.est[0])} – ${fmt(l.est[1])}</td>
+                        <td><button class="btn" data-route="auth" href="#upcoming">Set Reminder</button></td>`;
+        upT.appendChild(tr);
+      });
+      // Featured
+      const fT = $('#featuredRows'); fT.innerHTML='';
+      homeLots.slice(0,3).forEach(l=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML = `<td>${l.id} — ${l.title}</td><td>Premier</td><td>${fmt(l.est[0])} – ${fmt(l.est[1])}</td><td>Spotlight</td>`;
+        fT.appendChild(tr);
+      });
+    }
+
+    /* ===== Live filters (demo) ===== */
+    function filterLive(){
+      const cat=$('#liveCat').value, sort=$('#liveSort').value, q=$('#liveQuery').value.trim();
+      alert(`Live filter\nCategory: ${cat}\nSort: ${sort}\nQuery: ${q||'(none)'}`);
+    }
+
+    /* ===== Currency conversion (front-end only; replace with backend FX) ===== */
+    const FX = {
+      // Approx demo rates vs USD — replace with backend live rates
+      USD:1, EUR:0.92, GBP:0.78, NGN:1600, JPY:155, INR:84, CHF:0.88, CAD:1.36, AUD:1.50
+    };
+    function convertUSD(usd, to){ return (Number(usd)||0) * (FX[to] ?? 1); }
+    function updateFxPreview(){
+      const amt = Number($('#bwAmount').value||0);
+      const cur = $('#bwCurrency').value;
+      if(!amt){ $('#fxPreview').textContent='Converted total will appear here after you enter an amount.'; return; }
+      const converted = convertUSD(amt, cur);
+      $('#fxPreview').textContent = `Estimated charge: ${fmt(converted, cur)} (front-end estimate; final at gateway)`;
+    }
+    $('#bwAmount').addEventListener('input', updateFxPreview);
+    $('#bwCurrency').addEventListener('change', updateFxPreview);
+
+    /* ===== Bid Now wiring ===== */
+    document.addEventListener('click',(e)=>{
+      const b = e.target.closest('[data-bid]');
+      if(!b) return;
+      const lotId = b.getAttribute('data-bid');
+      if(!user){
+        pending.action='bid'; pending.payload=lotId; openAuth(); return;
+      }
+      openBidWizard(lotId);
+    });
+
+    const wizard = $('#bidWizard');
+    let wizStep=1, wizLot=null, cachedFxText='';
+    function openBidWizard(lotId){
+      const lot = (homeLots.find(x=>x.id===lotId) || readLotSource().find(x=>x.id===lotId));
+      wizLot = lot;
+      $('#bwLotTitle').textContent = lot.title;
+      $('#bwLotCloses').textContent = new Date(lot.closesISO || Date.now()+3600000).toLocaleString();
+      $('#bwAmount').value=''; $('#bwCurrency').value='USD'; updateFxPreview();
+      $('#bwAgree').checked=false;
+      $('#bwFullName').value=''; $('#bwPhone').value=''; $('#bwAddress').value=''; $('#bwId').value='';
+      $('#rvFx').textContent=''; cachedFxText='';
+      setStep(1);
+      wizard.classList.add('open');
+    }
+    function closeBidWizard(){ wizard.classList.remove('open'); }
+    function setStep(n){
+      wizStep=n;
+      $('#step1').classList.toggle('active', n===1);
+      $('#step2').classList.toggle('active', n===2);
+      $('#step3').classList.toggle('active', n===3);
+      $('#bidStep1').style.display = n===1?'block':'none';
+      $('#bidStep2').style.display = n===2?'block':'none';
+      $('#bidStep3').style.display = n===3?'block':'none';
+      $('#nextBtn').textContent = n===3 ? 'Proceed to Payment' : 'Next';
+    }
+    function nextStep(){
+      if(wizStep===1){
+        const amt = Number($('#bwAmount').value);
+        if(!amt || amt<=0){ alert('Enter a valid bid amount.'); return; }
+        if(!$('#bwAgree').checked){ alert('You must agree to the Conditions of Sale.'); return; }
+        // cache FX for review
+        const cur=$('#bwCurrency').value, converted=convertUSD(amt,cur);
+        cachedFxText = `${fmt(converted, cur)} (${cur})`;
+        setStep(2);
+      } else if(wizStep===2){
+        let phone = $('#bwPhone').value.trim();
+        const fullName = $('#bwFullName').value.trim();
+        const address = $('#bwAddress').value.trim();
+        const idFile = $('#bwId').value;
+
+        const ok = fullName && phone && address && idFile;
+        if (!ok) { alert('Please complete bidder details.'); return; }
+
+        // Auto-format: strip spaces/dashes/() ; ensure +
+        phone = phone.replace(/[\s\-()]/g, '');
+        if (!phone.startsWith('+')) phone = '+' + phone;
+
+        // Accept any country code (including +1), 6–15 digits total after +
+        const phonePattern = /^\+\d{6,15}$/;
+        if (!phonePattern.test(phone)) {
+          alert('Enter a valid international number in E.164 format, e.g. +14151234567, +447911123456, +2348012345678');
+          return;
+        }
+        $('#bwPhone').value = phone; // keep cleaned
+
+        // Fill review
+        $('#rvLot').textContent = wizLot.title;
+        $('#rvAmount').textContent = Number($('#bwAmount').value).toLocaleString();
+        $('#rvFx').textContent = cachedFxText || '—';
+        $('#rvName').textContent = fullName;
+        $('#rvPhone').textContent = phone;
+        $('#rvAddr').textContent = address;
+        setStep(3);
+      } else {
+        // Payment handoff (backend)
+        alert('Demo complete. Backend would now create a checkout session in your selected currency.');
+        closeBidWizard();
+      }
+    }
+    function prevStep(){ if(wizStep>1) setStep(wizStep-1); else closeBidWizard(); }
+
+    /* ===== Year footer & boot ===== */
+    $('#year').textContent = new Date().getFullYear();
+    refreshAuthUI();
+    showOnly('home');
+    renderHomeLots();
+
+    /* ===== Extra UX: close wizard with ESC, resume bid after auth ===== */
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ closeBidWizard(); }});
+    modal.addEventListener('transitionend', ()=>{ if(user && pending.action==='bid'){ openBidWizard(pending.payload); pending.action=null; pending.payload=null; }});
+  </script>
+</body>
+</html>
